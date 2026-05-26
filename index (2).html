@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Amazing Digital Tapwater</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #4dc8f0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===== HEADER / STAGE ===== */
+    .stage {
+      background: linear-gradient(180deg, #5b1a8a 0%, #7b2fc4 40%, #4e1a8a 100%);
+      position: relative;
+      width: 100%;
+      padding: 10px 0 0 0;
+      overflow: hidden;
+      min-height: 220px;
+    }
+
+    /* Curtains */
+    .curtain-left, .curtain-right {
+      position: absolute;
+      top: 0;
+      width: 22%;
+      height: 100%;
+    }
+    .curtain-left {
+      left: 0;
+      background: linear-gradient(90deg, #8b1a1a 0%, #c0392b 60%, #e74c3c 100%);
+      clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+    }
+    .curtain-right {
+      right: 0;
+      background: linear-gradient(270deg, #8b1a1a 0%, #c0392b 60%, #e74c3c 100%);
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 15% 100%);
+    }
+    .curtain-fold-left {
+      position: absolute;
+      left: 12%;
+      top: 0;
+      width: 4%;
+      height: 100%;
+      background: rgba(0,0,0,0.15);
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+    .curtain-fold-right {
+      position: absolute;
+      right: 12%;
+      top: 0;
+      width: 4%;
+      height: 100%;
+      background: rgba(0,0,0,0.15);
+    }
+
+    /* Stage lights top */
+    .stage-lights {
+      position: absolute;
+      top: 0;
+      left: 0; right: 0;
+      height: 18px;
+      display: flex;
+      gap: 0;
+    }
+    .stage-lights span {
+      flex: 1;
+      height: 100%;
+    }
+    .stage-lights span:nth-child(odd) { background: #f39c12; }
+    .stage-lights span:nth-child(even) { background: #2980b9; }
+
+    /* Title block */
+    .title-block {
+      position: relative;
+      z-index: 5;
+      text-align: center;
+      padding: 20px 20px 10px;
+    }
+    .title-amazing {
+      font-family: 'Fredoka One', cursive;
+      color: #f1c40f;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 0 #e67e22, 0 0 10px rgba(241,196,15,0.5);
+      display: block;
+    }
+    .title-digital {
+      font-family: 'Fredoka One', cursive;
+      font-size: 3.2rem;
+      color: #e74c3c;
+      text-shadow:
+        3px 3px 0 #8b0000,
+        -1px -1px 0 #8b0000,
+        1px -1px 0 #8b0000,
+        -1px 1px 0 #8b0000;
+      display: block;
+      line-height: 1;
+      position: relative;
+    }
+    .title-digital .sparkle {
+      color: #f1c40f;
+      font-size: 2rem;
+      vertical-align: middle;
+    }
+
+    /* TAPWATER letter boxes */
+    .title-tapwater {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+      padding-bottom: 14px;
+    }
+    .tap-letter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 52px;
+      border-radius: 10px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 2rem;
+      color: white;
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+      border: 3px solid rgba(255,255,255,0.4);
+      box-shadow: 0 4px 0 rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.3);
+      position: relative;
+      top: 0;
+    }
+    .tap-letter:hover { top: 2px; box-shadow: 0 2px 0 rgba(0,0,0,0.3); }
+    .tap-letter.red { background: #e74c3c; }
+    .tap-letter.blue { background: #2980b9; }
+    .tap-letter.green { background: #27ae60; }
+    .tap-letter.yellow { background: #f39c12; }
+    .tap-letter.purple { background: #8e44ad; }
+    .tap-letter.orange { background: #e67e22; }
+
+    /* Stage bottom bar */
+    .stage-bottom {
+      display: flex;
+      gap: 0;
+      height: 22px;
+    }
+    .stage-bottom span { flex: 1; }
+    .stage-bottom span:nth-child(1) { background: #e74c3c; }
+    .stage-bottom span:nth-child(2) { background: #f1c40f; }
+    .stage-bottom span:nth-child(3) { background: #3498db; }
+    .stage-bottom span:nth-child(4) { background: #e74c3c; }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      background: #4dc8f0;
+      padding: 18px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Card base */
+    .card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .card-header {
+      padding: 10px 18px;
+      text-align: center;
+      border-radius: 16px 16px 0 0;
+    }
+    .card-header h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.4rem;
+      color: white;
+      text-shadow: 1px 2px 0 rgba(0,0,0,0.2);
+    }
+    .card-body {
+      padding: 14px 16px 16px;
+    }
+
+    /* ===== TOP ROW: Control + Microbit ===== */
+    .top-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .card-red .card-header { background: #e74c3c; }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      padding: 10px 12px 14px;
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      border: none;
+      border-radius: 30px;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: all 0.12s;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+      position: relative;
+      top: 0;
+    }
+    .btn:active { top: 3px; box-shadow: 0 1px 0 rgba(0,0,0,0.3); }
+
+    .btn-green {
+      background: #2ecc71;
+      color: white;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+      box-shadow: 0 4px 0 #1a8a47;
+    }
+    .btn-green:active { box-shadow: 0 1px 0 #1a8a47; }
+
+    .btn-dark {
+      background: #2c3e50;
+      color: white;
+      box-shadow: 0 4px 0 #111;
+    }
+    .btn-dark:active { box-shadow: 0 1px 0 #111; }
+
+    .btn-on {
+      background: white;
+      color: #2980b9;
+      border: 3px solid #2980b9;
+      font-size: 1.2rem;
+      width: 100%;
+      padding: 14px;
+      box-shadow: 0 4px 0 #1a5c8a;
+    }
+    .btn-on:active { box-shadow: 0 1px 0 #1a5c8a; }
+
+    .btn-off {
+      background: #2980b9;
+      color: white;
+      border: 3px solid #2980b9;
+      font-size: 1.2rem;
+      width: 100%;
+      padding: 14px;
+      box-shadow: 0 4px 0 #1a5c8a;
+    }
+    .btn-off:active { box-shadow: 0 1px 0 #1a5c8a; }
+
+    /* ===== BOTTOM ROW: Cloud + Right Column ===== */
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* Cloud card */
+    .card-cloud {
+      background: #f1c40f;
+      border-radius: 20px;
+      padding: 16px 16px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .card-cloud h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.5rem;
+      color: #2c3e50;
+      margin-bottom: 14px;
+    }
+    .field-label {
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: #2c3e50;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .field-input {
+      width: 100%;
+      background: #d5d5d5;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    .field-input:focus { background: #c8c8c8; }
+
+    /* Team badge */
+    .team-badge {
+      background: black;
+      border-radius: 16px;
+      padding: 18px 16px;
+      margin-top: 14px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .team-badge .team-text {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .team-badge .sym1 { color: #2ecc71; }
+    .team-badge .sym2 { color: #f39c12; }
+    .team-badge .sym3 { color: #e74c3c; }
+    .team-badge .word { color: white; }
+    .team-badge .sym4 { color: #3498db; }
+    .team-badge .num  { color: white; }
+    .team-badge .sym5 { color: #f1c40f; }
+    .team-badge .excl { color: #e74c3c; }
+
+    /* Right column */
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Ultrasonic */
+    .card-ultrasonic {
+      background: #8bc34a;
+      border-radius: 20px;
+      padding: 14px 16px 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .card-ultrasonic h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.3rem;
+      color: white;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+      margin-bottom: 10px;
+    }
+    .ultrasonic-reading {
+      background: white;
+      border-radius: 14px;
+      text-align: center;
+      padding: 10px 8px;
+      margin-bottom: 10px;
+    }
+    .ultrasonic-value {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.8rem;
+      color: #8bc34a;
+      line-height: 1;
+    }
+    .ultrasonic-bar {
+      height: 5px;
+      background: #8bc34a;
+      border-radius: 10px;
+      margin: 6px 8px 0;
+    }
+    .pump-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #7cb83e;
+      border-radius: 12px;
+      padding: 6px 10px;
+      margin-bottom: 6px;
+    }
+    .pump-label {
+      color: white;
+      font-weight: 800;
+      font-size: 0.78rem;
+    }
+    .pump-val {
+      background: white;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-weight: 900;
+      font-size: 0.8rem;
+      color: #2c3e50;
+      border: 2px solid #8bc34a;
+    }
+
+    /* Water pump */
+    .card-waterpump {
+      background: #3498db;
+      border-radius: 20px;
+      padding: 14px 16px 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .card-waterpump h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.3rem;
+      color: white;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+      margin-bottom: 12px;
+    }
+    .pump-btn-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Responsive for very small screens */
+    @media (max-width: 400px) {
+      .tap-letter { width: 38px; height: 42px; font-size: 1.6rem; }
+      .title-digital { font-size: 2.4rem; }
+      .top-row, .bottom-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== STAGE / HEADER ===== -->
+<div class="stage">
+  <div class="stage-lights">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="curtain-left"></div>
+  <div class="curtain-fold-left"></div>
+  <div class="curtain-right"></div>
+  <div class="curtain-fold-right"></div>
+
+  <div class="title-block">
+    <span class="title-amazing">The Amazing</span>
+    <span class="title-digital">
+      <span class="sparkle">✦</span> Digital <span class="sparkle">✦</span>
+    </span>
+    <div class="title-tapwater">
+      <div class="tap-letter red">T</div>
+      <div class="tap-letter blue">A</div>
+      <div class="tap-letter green">P</div>
+      <div class="tap-letter yellow">W</div>
+      <div class="tap-letter purple">A</div>
+      <div class="tap-letter red">T</div>
+      <div class="tap-letter orange">E</div>
+      <div class="tap-letter blue">R</div>
+    </div>
+  </div>
+</div>
+
+<div class="stage-bottom">
+  <span></span><span></span><span></span><span></span>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content">
+
+  <!-- TOP ROW -->
+  <div class="top-row">
+
+    <!-- Control Card -->
+    <div class="card card-red">
+      <div class="card-header"><h2>Control</h2></div>
+      <div class="btn-row">
+        <button class="btn btn-green">otomatic</button>
+        <button class="btn btn-dark">Manual</button>
+      </div>
+    </div>
+
+    <!-- Connect Microbit Card -->
+    <div class="card card-red">
+      <div class="card-header"><h2>Connect Microbit</h2></div>
+      <div class="btn-row">
+        <button class="btn btn-green">connect</button>
+        <button class="btn btn-dark">disconnect</button>
+      </div>
+    </div>
+
+  </div><!-- /top-row -->
+
+  <!-- BOTTOM ROW -->
+  <div class="bottom-row">
+
+    <!-- LEFT: Cloud + Team -->
+    <div style="display:flex;flex-direction:column;gap:14px;">
+
+      <!-- Cloud Card -->
+      <div class="card-cloud">
+        <h2>Cloud</h2>
+        <label class="field-label">Api key</label>
+        <input class="field-input" type="text" placeholder="" />
+        <label class="field-label">Data base URL</label>
+        <input class="field-input" type="text" placeholder="" />
+        <label class="field-label">Node Path</label>
+        <input class="field-input" type="text" placeholder="" />
+      </div>
+
+      <!-- Team Badge -->
+      <div class="team-badge">
+        <div class="team-text">
+          <span class="sym1">%</span>
+          <span class="sym2">$</span>
+          <span class="word">TEAM&nbsp;2</span>
+          <span class="sym4">#</span>
+          <span class="excl">!</span>
+        </div>
+      </div>
+
+    </div><!-- /left col -->
+
+    <!-- RIGHT: Ultrasonic + Water Pump -->
+    <div class="right-col">
+
+      <!-- Ultrasonic Card -->
+      <div class="card-ultrasonic">
+        <h2>Ultrasonic</h2>
+        <div class="ultrasonic-reading">
+          <div class="ultrasonic-value">12 cm</div>
+          <div class="ultrasonic-bar"></div>
+        </div>
+        <div class="pump-row">
+          <span class="pump-label">Pump on if dst</span>
+          <span class="pump-val">10 cm</span>
+        </div>
+        <div class="pump-row">
+          <span class="pump-label">Pump off if dst</span>
+          <span class="pump-val">-10 cm</span>
+        </div>
+      </div>
+
+      <!-- Water Pump Card -->
+      <div class="card-waterpump">
+        <h2>Water pump</h2>
+        <div class="pump-btn-col">
+          <button class="btn btn-on">ON</button>
+          <button class="btn btn-off">OFF</button>
+        </div>
+      </div>
+
+    </div><!-- /right col -->
+
+  </div><!-- /bottom-row -->
+
+</div><!-- /main-content -->
+
+<script>
+  // Simple toggle state
+  const btnOtomatic = document.querySelectorAll('.btn-green')[0];
+  const btnManual = document.querySelectorAll('.btn-dark')[0];
+  const btnConnect = document.querySelectorAll('.btn-green')[1];
+  const btnDisconnect = document.querySelectorAll('.btn-dark')[1];
+
+  function setActive(a, b) {
+    a.style.opacity = '1';
+    b.style.opacity = '0.5';
+  }
+
+  btnOtomatic.addEventListener('click', () => setActive(btnOtomatic, btnManual));
+  btnManual.addEventListener('click', () => setActive(btnManual, btnOtomatic));
+  btnConnect.addEventListener('click', () => setActive(btnConnect, btnDisconnect));
+  btnDisconnect.addEventListener('click', () => setActive(btnDisconnect, btnConnect));
+
+  const btnOn = document.querySelector('.btn-on');
+  const btnOff = document.querySelector('.btn-off');
+  btnOn.addEventListener('click', () => {
+    btnOn.style.background = '#2980b9';
+    btnOn.style.color = 'white';
+    btnOff.style.background = 'white';
+    btnOff.style.color = '#2980b9';
+  });
+  btnOff.addEventListener('click', () => {
+    btnOff.style.background = '#2980b9';
+    btnOff.style.color = 'white';
+    btnOn.style.background = 'white';
+    btnOn.style.color = '#2980b9';
+  });
+</script>
+
+</body>
+</html>
