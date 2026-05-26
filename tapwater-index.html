@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Amazing Digital Tapwater — Team 2</title>
+<style>
+  :root{
+    /* natural size of the reference image */
+    --w: 1448px;
+    --h: 1932px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Comic Sans MS','Comic Sans',system-ui,sans-serif}
+  html,body{background:#7ec8e9;min-height:100%}
+  body{display:flex;justify-content:center;padding:16px}
+  .stage{
+    position:relative;
+    width:min(100%,var(--w));
+    aspect-ratio: 1448 / 1932;
+    background:url('tapwater-bg.png') center/100% 100% no-repeat;
+    border-radius:12px;
+    overflow:hidden;
+  }
+  /* invisible overlays positioned in % of the stage */
+  .hit{
+    position:absolute;
+    border:0;background:transparent;cursor:pointer;
+    font:inherit;color:transparent;
+    outline:none;
+  }
+  .hit:focus-visible{outline:3px dashed #fff;outline-offset:2px}
+
+  .field{
+    position:absolute;
+    border:0;background:transparent;
+    font-family:'Comic Sans MS',sans-serif;
+    font-size:1.4vw;
+    color:#222;
+    padding:0 14px;
+    outline:none;
+  }
+  .field:focus{background:rgba(255,255,255,.55);border-radius:999px}
+  textarea.field{resize:none;padding:10px 14px}
+
+  .dist{
+    position:absolute;
+    left:54.5%; top:46.5%;
+    width:35%; height:7%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;
+    font-size:4.2vw;
+    color:#7ed321;
+    text-shadow:0 2px 0 rgba(0,0,0,.05);
+    pointer-events:none;
+  }
+
+  /* positions tuned to the reference layout */
+  .ctrl-auto   { left: 6.2%;  top: 30.2%; width: 17.0%; height: 4.8%; }
+  .ctrl-manual { left: 26.3%; top: 30.2%; width: 17.0%; height: 4.8%; }
+  .mb-connect  { left: 52.0%; top: 30.2%; width: 17.0%; height: 4.8%; }
+  .mb-disc     { left: 75.5%; top: 30.2%; width: 18.5%; height: 4.8%; }
+
+  .in-api   { left: 6.5%; top: 49.0%; width: 39%; height: 3.6%; }
+  .in-db    { left: 6.5%; top: 57.5%; width: 39%; height: 3.6%; }
+  .in-node  { left: 6.5%; top: 65.5%; width: 39%; height: 8.0%; }
+
+  .in-on    { left: 74.8%; top: 56.5%; width: 15%; height: 3.0%; text-align:center; color:#fff; font-weight:700;}
+  .in-off   { left: 74.8%; top: 62.0%; width: 15%; height: 3.0%; text-align:center; color:#fff; font-weight:700;}
+
+  .pump-on  { left: 52.0%; top: 76.0%; width: 43.5%; height: 5.4%; }
+  .pump-off { left: 52.0%; top: 82.5%; width: 43.5%; height: 5.4%; }
+
+  .badge{
+    position:fixed; right:10px; bottom:10px;
+    background:#000;color:#fff;font-size:11px;
+    padding:4px 8px;border-radius:6px;opacity:.4;
+  }
+</style>
+</head>
+<body>
+  <main class="stage" id="stage" aria-label="Digital Tapwater control panel">
+    <!-- Control -->
+    <button class="hit ctrl-auto"   data-mode="auto"   aria-label="Otomatic"></button>
+    <button class="hit ctrl-manual" data-mode="manual" aria-label="Manual"></button>
+
+    <!-- Microbit -->
+    <button class="hit mb-connect" id="btnConnect"    aria-label="Connect microbit"></button>
+    <button class="hit mb-disc"    id="btnDisconnect" aria-label="Disconnect microbit"></button>
+
+    <!-- Cloud -->
+    <input  class="field in-api"  id="apiKey"  type="text" placeholder="" autocomplete="off" />
+    <input  class="field in-db"   id="dbUrl"   type="text" placeholder="" autocomplete="off" />
+    <textarea class="field in-node" id="nodePath"></textarea>
+
+    <!-- Ultrasonic (background image already shows the default values;
+         these overlays stay empty until updated by code) -->
+    <div class="dist" id="dist"></div>
+    <input class="field in-on"  id="thOn"  type="text" placeholder="" />
+    <input class="field in-off" id="thOff" type="text" placeholder="" />
+
+    <!-- Water pump -->
+    <button class="hit pump-on"  id="pumpOn"  aria-label="Water pump on"></button>
+    <button class="hit pump-off" id="pumpOff" aria-label="Water pump off"></button>
+  </main>
+
+<script>
+  const $ = (s)=>document.querySelector(s);
+  let mode='auto', pump=false, connected=false;
+
+  document.querySelectorAll('[data-mode]').forEach(b=>{
+    b.addEventListener('click',()=>{ mode=b.dataset.mode; console.log('mode',mode); });
+  });
+  $('#btnConnect').onclick    = ()=>{ connected=true;  console.log('microbit connected'); };
+  $('#btnDisconnect').onclick = ()=>{ connected=false; console.log('microbit disconnected'); };
+  $('#pumpOn').onclick  = ()=>{ pump=true;  console.log('pump ON'); };
+  $('#pumpOff').onclick = ()=>{ pump=false; console.log('pump OFF'); };
+
+  // expose hook so microbit code can update the distance display
+  window.setDistance = (cm)=>{ $('#dist').textContent = cm + ' cm'; };
+</script>
+</body>
+</html>
